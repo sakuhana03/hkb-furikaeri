@@ -1,0 +1,384 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>振り返りシート｜広島北ボーイズ</title>
+<meta name="theme-color" content="#1d2b4a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700;900&display=swap">
+<style>
+/* 1カラムのスマホ用フォーム。STEPごとにカード、下部に固定の送信バー */
+:root{
+  --ink:#1d2b4a; --ink-soft:#4a5672; --line:#d6dbe6; --bg:#f3f5f9; --card:#ffffff;
+  --field:#2f6b4f; --field-soft:#e5f0ea; --stitch:#c8363b; --warn-bg:#fff4e0; --warn:#8a5a00;
+  --font:"Noto Sans JP","Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic",Meiryo,sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
+.wrap{max-width:640px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{background:var(--ink);color:#fff}
+header.top .wrap{padding-block:20px 18px}
+.team{font-size:12px;letter-spacing:.12em;opacity:.8}
+h1{font-size:22px;font-weight:900;margin:4px 0 6px;text-wrap:balance}
+.lead{font-size:14px;opacity:.92;margin:0}
+.rules{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.rules span{font-size:12px;border:1px solid rgba(255,255,255,.45);border-radius:999px;padding:2px 10px}
+main{display:flex;flex-direction:column;gap:16px;padding-block:16px}
+section.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:14px}
+.step-head{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.step-no{font-size:12px;font-weight:900;color:#fff;background:var(--field);border-radius:4px;padding:2px 8px;letter-spacing:.06em}
+.step-head h2{font-size:18px;margin:0;font-weight:900;flex:1;min-width:0}
+.step-time{font-size:12px;color:var(--ink-soft)}
+.hint{font-size:13px;color:var(--ink-soft);margin:-6px 0 0}
+.note{font-size:13px;background:var(--warn-bg);color:var(--warn);border-radius:8px;padding:8px 10px}
+label.q{display:block;font-weight:700;font-size:15px}
+label.q small{display:block;font-weight:400;font-size:12px;color:var(--ink-soft)}
+textarea,input[type=text],select{width:100%;font:inherit;font-weight:400;min-height:46px;font-size:16px;color:var(--ink);background:#fff;border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-top:6px}
+textarea{min-height:88px;resize:vertical;line-height:1.6}
+textarea:focus,input:focus,select:focus{outline:3px solid var(--field-soft);border-color:var(--field)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.grid2 > *{min-width:0}
+.req{color:var(--stitch);font-size:12px;margin-left:4px}
+.err{border-color:var(--stitch)!important;background:#fff6f6}
+.scale{display:flex;gap:8px;margin-top:8px}
+.scale input{position:absolute;opacity:0;pointer-events:none}
+.scale label{flex:1;text-align:center;border:1px solid var(--line);border-radius:8px;padding:10px 0;font-weight:900;font-size:18px;cursor:pointer;background:#fff}
+.scale input:checked + label{background:var(--field);border-color:var(--field);color:#fff}
+.scale input:focus-visible + label{outline:3px solid var(--field-soft)}
+.scale-cap{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-soft);margin-top:4px}
+.sendbar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);z-index:5;
+  padding-bottom:env(safe-area-inset-bottom,0px)}
+.sendbar .wrap{padding-block:12px;display:flex;gap:10px;align-items:center}
+.progress{font-size:12px;color:var(--ink-soft);white-space:nowrap}
+button{font:inherit;cursor:pointer}
+.btn{flex:1;border:0;border-radius:10px;padding:14px 12px;font-weight:900;font-size:16px;background:var(--ink);color:#fff}
+.btn:disabled{opacity:.5}
+.btn-line{background:#06c755}
+.btn-sub{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.dialog{position:fixed;inset:0;background:rgba(20,28,45,.55);z-index:10;display:flex;align-items:flex-end;justify-content:center}
+.sheet{background:var(--card);width:100%;max-width:640px;border-radius:16px 16px 0 0;padding:20px max(16px,env(safe-area-inset-left,0px)) calc(20px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px}
+.sheet h3{margin:0;font-size:18px}
+.sheet p{margin:0;font-size:14px}
+.sheet ol{margin:0;padding-left:1.4em;font-size:14px}
+.saved{font-size:12px;color:var(--field);text-align:right;min-height:1.2em}
+.clear{background:none;border:0;color:var(--ink-soft);text-decoration:underline;font-size:13px;padding:4px 0;align-self:center}
+[hidden]{display:none!important}
+
+/* ===== PDF用レイアウト（画面外で描画） ===== */
+#pdfRoot{position:fixed;left:-10000px;top:0}
+.pg{width:794px;min-height:1123px;background:#fff;color:#111;padding:44px 48px;font-family:var(--font);font-size:13px;line-height:1.55;display:flex;flex-direction:column;gap:12px}
+.pg .ph{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #1d2b4a;padding-bottom:6px}
+.pg .ph b{font-size:22px;font-weight:900}
+.pg .ph span{font-size:12px;color:#444}
+.pg .who{display:flex;gap:18px;font-size:14px;border:1px solid #999;padding:8px 12px}
+.pg .who span b{font-size:16px;margin-left:6px}
+.pg .st{display:flex;align-items:center;gap:8px;margin-top:4px}
+.pg .st i{font-style:normal;background:#2f6b4f;color:#fff;font-weight:900;font-size:11px;padding:1px 7px;border-radius:3px}
+.pg .st b{font-size:15px}
+.pg .bx{border:1px solid #999;padding:6px 10px;min-height:54px}
+.pg .bx .t{font-size:11px;color:#2f6b4f;font-weight:700}
+.pg .bx .a{white-space:pre-wrap;word-break:break-all;font-size:13px}
+.pg .row{display:grid;gap:8px}
+.pg .r2{grid-template-columns:1fr 1fr}
+.pg .r3{grid-template-columns:1fr 1fr 1fr}
+.pg .foot{margin-top:auto;display:flex;justify-content:space-between;font-size:11px;color:#666}
+.pg .rate span{display:inline-block;width:26px;height:26px;line-height:24px;text-align:center;border:1px solid #999;border-radius:50%;margin-right:6px;font-weight:700}
+.pg .rate span.on{background:#2f6b4f;color:#fff;border-color:#2f6b4f}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="team">広島北ボーイズ　オフ前ミーティング</div>
+    <h1>この1年の振り返りシート</h1>
+    <p class="lead">「県内無敗・全国出場」を目指して1年間やってきました。まず「できたこと」を認めて、それから「足りなかったこと」を見つけ、次の1年につなげよう。</p>
+    <div class="rules"><span>人を責めない</span><span>人の意見を否定しない</span><span>「誰が」ではなく「何が」</span><span>全員が一言は話す</span></div>
+  </div>
+</header>
+
+<form id="f" class="wrap" autocomplete="off" novalidate>
+<main>
+
+  <section class="card" aria-labelledby="h0">
+    <div class="step-head"><h2 id="h0">あなたについて</h2></div>
+    <div class="grid2">
+      <label class="q" for="grade">学年<span class="req">必須</span>
+        <select id="grade" name="grade">
+          <option value="">選ぶ</option>
+          <option>1年</option><option>2年</option><option>3年</option>
+        </select>
+      </label>
+      <label class="q" for="number">背番号
+        <input type="text" id="number" name="number" inputmode="numeric" maxlength="4">
+      </label>
+    </div>
+    <label class="q" for="name">名前<span class="req">必須</span>
+      <input type="text" id="name" name="name" maxlength="20" placeholder="例：広島 太郎">
+    </label>
+    <label class="q" for="group">グループ
+      <input type="text" id="group" name="group" maxlength="10" placeholder="例：A">
+    </label>
+  </section>
+
+  <section class="card" aria-labelledby="h1s">
+    <div class="step-head"><span class="step-no">STEP 1</span><h2 id="h1s">この1年で「できたこと」</h2><span class="step-time">個人で5分</span></div>
+    <p class="hint">成長したこと、うまくいった試合や場面、続けられたこと。小さなことでもOK。</p>
+    <label class="q" for="s1_team">チームとしてできたこと<textarea id="s1_team" name="s1_team"></textarea></label>
+    <label class="q" for="s1_self">自分としてできたこと<textarea id="s1_self" name="s1_self"></textarea></label>
+    <label class="q" for="s1_best">一番うれしかった試合・場面は？ それはなぜ？<textarea id="s1_best" name="s1_best"></textarea></label>
+  </section>
+
+  <section class="card" aria-labelledby="h2s">
+    <div class="step-head"><span class="step-no">STEP 2</span><h2 id="h2s">県内無敗・全国に届くために「足りなかったこと」</h2><span class="step-time">個人で10分</span></div>
+    <p class="note">「〇〇がエラーした」のような個人の名前は書かない。「チームとして」「場面として」何が足りなかったかを考えよう。</p>
+    <label class="q" for="s2_tech">① 技術<small>打つ・守る・投げる・走る、サイン・連携など</small><textarea id="s2_tech" name="s2_tech"></textarea></label>
+    <label class="q" for="s2_body">② 体力<small>スタミナ、パワー、スピード、ケガ、体づくり</small><textarea id="s2_body" name="s2_body"></textarea></label>
+    <label class="q" for="s2_mind">③ メンタル<small>プレッシャー、切り替え、集中、自信、試合前の準備</small><textarea id="s2_mind" name="s2_mind"></textarea></label>
+    <label class="q" for="s2_team">④ チーム<small>声かけ、ベンチの雰囲気、練習の質、まとまり</small><textarea id="s2_team" name="s2_team"></textarea></label>
+  </section>
+
+  <section class="card" aria-labelledby="h3s">
+    <div class="step-head"><span class="step-no">STEP 3</span><h2 id="h3s">負けた試合・接戦の試合を思い出そう</h2><span class="step-time">個人→グループ</span></div>
+    <p class="hint">接戦の終盤（最終回・ピンチ・チャンス）で、チームに何が起きていた？ ベンチやグラウンドの様子、声、気持ちを思い出そう。</p>
+    <label class="q" for="s3_scene">どの試合・どの場面？<textarea id="s3_scene" name="s3_scene"></textarea></label>
+    <label class="q" for="s3_what">そのとき、何が起きていた？<textarea id="s3_what" name="s3_what"></textarea></label>
+    <label class="q" for="s3_if">どうなっていれば、結果が変わった？<textarea id="s3_if" name="s3_if"></textarea></label>
+  </section>
+
+  <section class="card" aria-labelledby="h4s">
+    <div class="step-head"><span class="step-no">STEP 4</span><h2 id="h4s">3年生の話を聞いて</h2><span class="step-time">メモ</span></div>
+    <label class="q" for="s4_memo">心に残ったこと、自分たちに取り入れたいこと<textarea id="s4_memo" name="s4_memo"></textarea></label>
+    <label class="q" for="s4_ask">先輩に聞いてみたい質問<textarea id="s4_ask" name="s4_ask"></textarea></label>
+  </section>
+
+  <section class="card" aria-labelledby="h5s">
+    <div class="step-head"><span class="step-no">STEP 5</span><h2 id="h5s">今日のまとめ</h2><span class="step-time">個人で3分</span></div>
+    <label class="q" for="s5_key">一番大事だと思った「足りなかったこと」（1つだけ）<textarea id="s5_key" name="s5_key"></textarea></label>
+    <label class="q" for="s5_change">このオフ、自分がまず変えたいこと・始めたいこと<textarea id="s5_change" name="s5_change"></textarea></label>
+    <div>
+      <span class="q" style="font-weight:700">今日の話し合いに、どのくらい本気で参加できた？</span>
+      <div class="scale" role="radiogroup" aria-label="参加度">
+        <input type="radio" name="s5_rate" id="r1" value="1"><label for="r1">1</label>
+        <input type="radio" name="s5_rate" id="r2" value="2"><label for="r2">2</label>
+        <input type="radio" name="s5_rate" id="r3" value="3"><label for="r3">3</label>
+        <input type="radio" name="s5_rate" id="r4" value="4"><label for="r4">4</label>
+        <input type="radio" name="s5_rate" id="r5" value="5"><label for="r5">5</label>
+      </div>
+      <div class="scale-cap"><span>1：あまりできなかった</span><span>5：全力でできた</span></div>
+    </div>
+  </section>
+
+  <div class="saved" id="saved"></div>
+  <button type="button" class="clear" id="clearBtn">入力をすべて消す</button>
+</main>
+</form>
+
+<div class="sendbar">
+  <div class="wrap">
+    <span class="progress" id="progress">0 / 15</span>
+    <button type="button" class="btn" id="makeBtn">PDFにしてLINEで送る</button>
+  </div>
+</div>
+
+<!-- 送信シート -->
+<div class="dialog" id="dlg" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="dlgTitle">
+    <h3 id="dlgTitle">PDFができました</h3>
+    <p id="dlgFile"></p>
+    <ol id="shareSteps">
+      <li>下の「LINEで送る」を押す</li>
+      <li>アプリの一覧から「LINE」を選ぶ</li>
+      <li>送り先に「弘本トレーナー」を選んで送信</li>
+    </ol>
+    <ol id="dlSteps" hidden>
+      <li>下の「PDFを保存」を押して保存する</li>
+      <li>LINEで弘本トレーナーとのトークを開く</li>
+      <li>「＋」→「ファイル」から保存したPDFを選んで送信</li>
+    </ol>
+    <button type="button" class="btn btn-line" id="shareBtn">LINEで送る</button>
+    <a class="btn btn-line" id="dlLink" hidden style="text-align:center;text-decoration:none">PDFを保存</a>
+    <button type="button" class="btn btn-sub" id="previewBtn">中身を確認する</button>
+    <button type="button" class="btn btn-sub" id="closeBtn">閉じる</button>
+  </div>
+</div>
+
+<!-- 消去の確認 -->
+<div class="dialog" id="clrDlg" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="clrTitle">
+    <h3 id="clrTitle">入力をすべて消しますか？</h3>
+    <p>書いた内容は元に戻せません。</p>
+    <button type="button" class="btn" id="clrYes" style="background:var(--stitch)">消す</button>
+    <button type="button" class="btn btn-sub" id="clrNo">やめる</button>
+  </div>
+</div>
+
+<div id="pdfRoot" aria-hidden="true"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+(function(){
+  const KEY = 'hkb-furikaeri-2026';
+  const form = document.getElementById('f');
+  const $ = id => document.getElementById(id);
+  const TEXT_IDS = ['s1_team','s1_self','s1_best','s2_tech','s2_body','s2_mind','s2_team','s3_scene','s3_what','s3_if','s4_memo','s4_ask','s5_key','s5_change'];
+
+  // ---- 自動保存 ----
+  function data(){
+    const d = {};
+    form.querySelectorAll('input[type=text],select,textarea').forEach(el => d[el.name] = el.value);
+    const r = form.querySelector('input[name=s5_rate]:checked'); d.s5_rate = r ? r.value : '';
+    return d;
+  }
+  function load(){
+    let d = null;
+    try { d = JSON.parse(localStorage.getItem(KEY) || 'null'); } catch(e) {}
+    if (!d) return;
+    Object.keys(d).forEach(k => {
+      if (k === 's5_rate') { const r = $('r' + d[k]); if (r) r.checked = true; return; }
+      const el = form.elements[k]; if (el && typeof d[k] === 'string') el.value = d[k];
+    });
+  }
+  let t;
+  function save(){
+    clearTimeout(t);
+    t = setTimeout(() => {
+      try { localStorage.setItem(KEY, JSON.stringify(data())); $('saved').textContent = 'この端末に自動保存しました'; } catch(e) {}
+    }, 400);
+    updateProgress();
+  }
+  function updateProgress(){
+    const d = data();
+    let n = TEXT_IDS.filter(k => d[k].trim()).length + (d.s5_rate ? 1 : 0);
+    $('progress').textContent = n + ' / 15';
+  }
+  function grow(el){ el.style.height = 'auto'; el.style.height = Math.max(88, el.scrollHeight + 2) + 'px'; }
+
+  form.addEventListener('input', e => { if (e.target.tagName === 'TEXTAREA') grow(e.target); e.target.classList.remove('err'); save(); });
+  form.addEventListener('change', save);
+  form.addEventListener('submit', e => e.preventDefault());
+  load(); updateProgress();
+  form.querySelectorAll('textarea').forEach(grow);
+
+  // ---- 消去 ----
+  $('clearBtn').onclick = () => { $('clrDlg').hidden = false; };
+  $('clrNo').onclick = () => { $('clrDlg').hidden = true; };
+  $('clrYes').onclick = () => {
+    form.reset(); try { localStorage.removeItem(KEY); } catch(e) {}
+    form.querySelectorAll('textarea').forEach(grow);
+    $('saved').textContent = ''; updateProgress(); $('clrDlg').hidden = true; window.scrollTo(0,0);
+  };
+
+  // ---- PDF用レイアウト ----
+  const esc = s => (s || '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const bx = (title, v) => `<div class="bx"><div class="t">${title}</div><div class="a">${esc(v)}</div></div>`;
+  function pages(d){
+    const date = new Date();
+    const ds = `${date.getFullYear()}年${date.getMonth()+1}月${date.getDate()}日`;
+    const who = `<div class="who"><span>学年<b>${esc(d.grade)}</b></span><span>名前<b>${esc(d.name)}</b></span><span>背番号<b>${esc(d.number)}</b></span><span>グループ<b>${esc(d.group)}</b></span></div>`;
+    const rate = [1,2,3,4,5].map(i => `<span class="${String(i)===d.s5_rate?'on':''}">${i}</span>`).join('');
+    const p1 = `<div class="pg">
+      <div class="ph"><b>この1年の振り返りシート</b><span>広島北ボーイズ　オフ前ミーティング　${ds}</span></div>
+      ${who}
+      <div class="st"><i>STEP 1</i><b>この1年で「できたこと」</b></div>
+      <div class="row r2">${bx('チームとしてできたこと', d.s1_team)}${bx('自分としてできたこと', d.s1_self)}</div>
+      ${bx('一番うれしかった試合・場面は？ それはなぜ？', d.s1_best)}
+      <div class="st"><i>STEP 2</i><b>県内無敗・全国に届くために「足りなかったこと」</b></div>
+      <div class="row r2">${bx('① 技術', d.s2_tech)}${bx('② 体力', d.s2_body)}${bx('③ メンタル', d.s2_mind)}${bx('④ チーム', d.s2_team)}</div>
+      <div class="foot"><span>人を責めない／人の意見を否定しない／「誰が」ではなく「何が」</span><span>1/2</span></div>
+    </div>`;
+    const p2 = `<div class="pg">
+      <div class="ph"><b>この1年の振り返りシート</b><span>${esc(d.grade)}　${esc(d.name)}</span></div>
+      <div class="st"><i>STEP 3</i><b>負けた試合・接戦の試合を思い出そう</b></div>
+      <div class="row r3">${bx('どの試合・どの場面？', d.s3_scene)}${bx('そのとき、何が起きていた？', d.s3_what)}${bx('どうなっていれば、結果が変わった？', d.s3_if)}</div>
+      <div class="st"><i>STEP 4</i><b>3年生の話を聞いて</b></div>
+      ${bx('心に残ったこと、自分たちに取り入れたいこと', d.s4_memo)}
+      ${bx('先輩に聞いてみたい質問', d.s4_ask)}
+      <div class="st"><i>STEP 5</i><b>今日のまとめ</b></div>
+      ${bx('一番大事だと思った「足りなかったこと」（1つだけ）', d.s5_key)}
+      ${bx('このオフ、自分がまず変えたいこと・始めたいこと', d.s5_change)}
+      <div class="bx"><div class="t">今日の話し合いに、どのくらい本気で参加できた？（1：あまりできなかった　5：全力でできた）</div><div class="rate" style="margin-top:6px">${rate}</div></div>
+      <div class="foot"><span>※ 次回の「目標設定ミーティング」で使います。</span><span>2/2</span></div>
+    </div>`;
+    return [p1, p2];
+  }
+
+  let pdfFile = null, pdfUrl = null;
+  async function makePdf(d){
+    const root = $('pdfRoot');
+    root.innerHTML = pages(d).join('');
+    try { await document.fonts.ready; } catch(e) {}
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit:'mm', format:'a4', orientation:'portrait', compress:true });
+    const els = root.querySelectorAll('.pg');
+    for (let i = 0; i < els.length; i++) {
+      const c = await html2canvas(els[i], { scale:2, backgroundColor:'#ffffff', useCORS:true, logging:false });
+      const img = c.toDataURL('image/jpeg', 0.85);
+      // A4 (210x297)。長文で縦にはみ出した場合はページ内に縮小して収める
+      let w = 210, h = c.height * 210 / c.width, x = 0;
+      if (h > 297) { w = 210 * 297 / h; h = 297; x = (210 - w) / 2; }
+      if (i > 0) pdf.addPage();
+      pdf.addImage(img, 'JPEG', x, 0, w, h);
+    }
+    root.innerHTML = '';
+    const fname = `振り返りシート_${d.grade}_${d.name.replace(/[\\/:*?"<>|\s]/g,'')}.pdf`;
+    const blob = pdf.output('blob');
+    return new File([blob], fname, { type:'application/pdf' });
+  }
+
+  // ---- 送信 ----
+  $('makeBtn').onclick = async () => {
+    const d = data();
+    const miss = [];
+    if (!d.grade) miss.push('grade');
+    if (!d.name.trim()) miss.push('name');
+    if (miss.length) {
+      miss.forEach(id => $(id).classList.add('err'));
+      $(miss[0]).scrollIntoView({ behavior:'smooth', block:'center' });
+      $(miss[0]).focus({ preventScroll:true });
+      return;
+    }
+    const btn = $('makeBtn'); btn.disabled = true; btn.textContent = 'PDFを作っています…';
+    try {
+      pdfFile = await makePdf(d);
+      if (pdfUrl) URL.revokeObjectURL(pdfUrl);
+      pdfUrl = URL.createObjectURL(pdfFile);
+      const canShare = !!(navigator.canShare && navigator.canShare({ files:[pdfFile] }));
+      $('dlgFile').textContent = pdfFile.name;
+      $('shareSteps').hidden = !canShare; $('shareBtn').hidden = !canShare;
+      $('dlSteps').hidden = canShare; $('dlLink').hidden = canShare;
+      $('dlLink').href = pdfUrl; $('dlLink').download = pdfFile.name;
+      $('dlg').hidden = false;
+    } catch (e) {
+      console.error(e);
+      $('saved').textContent = 'PDFを作れませんでした。電波のよい所でページを開き直して、もう一度押してください。';
+    } finally {
+      btn.disabled = false; btn.textContent = 'PDFにしてLINEで送る';
+    }
+  };
+  // 共有はタップ直後に呼ぶ必要があるので、PDF作成とボタンを分けている
+  $('shareBtn').onclick = async () => {
+    if (!pdfFile) return;
+    try {
+      await navigator.share({ files:[pdfFile], title:pdfFile.name });
+      $('dlg').hidden = true;
+      $('saved').textContent = '共有画面を閉じました。LINEで送れたか、トークを確認してください。';
+    } catch (e) {
+      if (e && e.name === 'AbortError') return;
+      // 共有できない場合は保存に切り替え
+      $('shareSteps').hidden = true; $('shareBtn').hidden = true;
+      $('dlSteps').hidden = false; $('dlLink').hidden = false;
+    }
+  };
+  $('previewBtn').onclick = () => { if (pdfUrl) window.open(pdfUrl, '_blank'); };
+  $('closeBtn').onclick = () => { $('dlg').hidden = true; };
+})();
+</script>
+</body>
+</html>
