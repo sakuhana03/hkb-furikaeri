@@ -152,14 +152,9 @@ button{font:inherit;cursor:pointer}
     <label class="q" for="s3_if">どうなっていれば、結果が変わった？<textarea id="s3_if" name="s3_if"></textarea></label>
   </section>
 
-  <section class="card" aria-labelledby="h4s">
-    <div class="step-head"><span class="step-no">STEP 4</span><h2 id="h4s">3年生の話を聞いて</h2><span class="step-time">メモ</span></div>
-    <label class="q" for="s4_memo">心に残ったこと、自分たちに取り入れたいこと<textarea id="s4_memo" name="s4_memo"></textarea></label>
-    <label class="q" for="s4_ask">先輩に聞いてみたい質問<textarea id="s4_ask" name="s4_ask"></textarea></label>
-  </section>
 
   <section class="card" aria-labelledby="h5s">
-    <div class="step-head"><span class="step-no">STEP 5</span><h2 id="h5s">今日のまとめ</h2><span class="step-time">個人で3分</span></div>
+    <div class="step-head"><span class="step-no">STEP 4</span><h2 id="h5s">まとめ</h2><span class="step-time">個人で3分</span></div>
     <label class="q" for="s5_key">一番大事だと思った「足りなかったこと」（1つだけ）<textarea id="s5_key" name="s5_key"></textarea></label>
     <label class="q" for="s5_change">このオフ、自分がまず変えたいこと・始めたいこと<textarea id="s5_change" name="s5_change"></textarea></label>
     <div>
@@ -181,7 +176,7 @@ button{font:inherit;cursor:pointer}
 
 <div class="sendbar">
   <div class="wrap">
-    <span class="progress" id="progress">0 / 15</span>
+    <span class="progress" id="progress">0 / 13</span>
     <button type="button" class="btn" id="makeBtn">PDFにしてLINEで送る</button>
   </div>
 </div>
@@ -217,7 +212,7 @@ button{font:inherit;cursor:pointer}
 (function(){
   const form = document.getElementById('f');
   const $ = id => document.getElementById(id);
-  const TEXT_IDS = ['s1_team','s1_self','s1_best','s2_tech','s2_body','s2_mind','s2_team','s3_scene','s3_what','s3_if','s4_memo','s4_ask','s5_key','s5_change'];
+  const TEXT_IDS = ['s1_team','s1_self','s1_best','s2_tech','s2_body','s2_mind','s2_team','s3_scene','s3_what','s3_if','s5_key','s5_change'];
 
   // ---- 入力（端末には保存しない） ----
   function data(){
@@ -231,7 +226,7 @@ button{font:inherit;cursor:pointer}
   function updateProgress(){
     const d = data();
     let n = TEXT_IDS.filter(k => d[k].trim()).length + (d.s5_rate ? 1 : 0);
-    $('progress').textContent = n + ' / 15';
+    $('progress').textContent = n + ' / 13';
   }
   function grow(el){ el.style.height = 'auto'; el.style.height = Math.max(88, el.scrollHeight + 2) + 'px'; }
 
@@ -264,10 +259,7 @@ button{font:inherit;cursor:pointer}
       <div class="ph"><b>この1年の振り返りシート</b><span>${esc(d.grade)}　${esc(d.name)}</span></div>
       <div class="st"><i>STEP 3</i><b>負けた試合・接戦の試合を思い出そう</b></div>
       <div class="row r3">${bx('どの試合・どの場面？', d.s3_scene)}${bx('そのとき、何が起きていた？', d.s3_what)}${bx('どうなっていれば、結果が変わった？', d.s3_if)}</div>
-      <div class="st"><i>STEP 4</i><b>3年生の話を聞いて</b></div>
-      ${bx('心に残ったこと、自分たちに取り入れたいこと', d.s4_memo)}
-      ${bx('先輩に聞いてみたい質問', d.s4_ask)}
-      <div class="st"><i>STEP 5</i><b>今日のまとめ</b></div>
+      <div class="st"><i>STEP 4</i><b>まとめ</b></div>
       ${bx('一番大事だと思った「足りなかったこと」（1つだけ）', d.s5_key)}
       ${bx('このオフ、自分がまず変えたいこと・始めたいこと', d.s5_change)}
       <div class="bx"><div class="t">今日の話し合いに、どのくらい本気で参加できた？（1：あまりできなかった　5：全力でできた）</div><div class="rate" style="margin-top:6px">${rate}</div></div>
